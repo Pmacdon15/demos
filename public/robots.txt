@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.demos.patmac.ca
+
+# Sitemaps
+Sitemap: https://www.demos.patmac.ca/sitemap.xml
