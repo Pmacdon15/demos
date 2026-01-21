@@ -21,7 +21,14 @@ export default function Page() {
           >
             <Tooltip>
               <TooltipTrigger asChild>
-                <button  className={'border p-2 rounded-sm px-4 bg-blue-400 text-white hover:bg-blue-500'} type="button">Long Blocker (No Fallback)</button>
+                <button
+                  className={
+                    "border p-2 rounded-sm px-4 bg-blue-400 text-white hover:bg-blue-500"
+                  }
+                  type="button"
+                >
+                  Long Blocker (No Fallback)
+                </button>
               </TooltipTrigger>
               <TooltipContent>
                 <p>
@@ -35,13 +42,27 @@ export default function Page() {
             className="w-full text-center md:w-auto"
             href={"/cache-components/long-blocker-fallback"}
           >
-            <button  className={'border p-2 rounded-sm px-4 bg-blue-400 text-white hover:bg-blue-500'} type="button">Long Blocker (With Fallback)</button>
+            <button
+              className={
+                "border p-2 rounded-sm px-4 bg-blue-400 text-white hover:bg-blue-500"
+              }
+              type="button"
+            >
+              Long Blocker (With Fallback)
+            </button>
           </Link>
           <Link
             className="w-full text-center md:w-auto"
             href={"/cache-components/long-blocker-ppr-load"}
           >
-            <button  className={'border p-2 rounded-sm px-4 bg-blue-400 text-white hover:bg-blue-500'} type="button">PPR Load</button>
+            <button
+              className={
+                "border p-2 rounded-sm px-4 bg-blue-400 text-white hover:bg-blue-500"
+              }
+              type="button"
+            >
+              PPR Load
+            </button>
           </Link>
         </div>
         <p className="mt-2">

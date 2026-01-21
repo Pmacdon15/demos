@@ -41,14 +41,21 @@ export default function Page() {
             <h2 className="mb-2 font-semibold text-xl">
               Dynamic cached content
             </h2>
-            <Suspense>
-              <CachedContent />
-            </Suspense>
+            {/* <Suspense> */}
+            <CachedContent />
+            {/* </Suspense> */}
           </div>
         </div>
         <div className="mt-8 text-center">
           <Link className="w-full md:w-auto" href="/">
-              <button  className={'border p-2 rounded-sm px-4 bg-blue-400 text-white hover:bg-blue-500'} type="button">Back</button>
+            <button
+              className={
+                "border p-2 rounded-sm px-4 bg-blue-400 text-white hover:bg-blue-500"
+              }
+              type="button"
+            >
+              Back
+            </button>
           </Link>
         </div>
       </div>

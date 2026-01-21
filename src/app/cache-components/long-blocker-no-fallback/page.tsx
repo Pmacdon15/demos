@@ -15,7 +15,14 @@ export default async function Page() {
         </p>
         <div className="mt-8">
           <Link className="w-full md:w-auto" href="/cache-components">
-            <button  className={'border p-2 rounded-sm px-4 bg-blue-400 text-white hover:bg-blue-500'} type="button">Back</button>
+            <button
+              className={
+                "border p-2 rounded-sm px-4 bg-blue-400 text-white hover:bg-blue-500"
+              }
+              type="button"
+            >
+              Back
+            </button>
           </Link>
         </div>
       </div>
