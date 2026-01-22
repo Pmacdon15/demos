@@ -1,5 +1,5 @@
 import type { Data } from '@/types/data-types'
-import OptimisticDataDisplay from './OptimisticDataDisplay'
+import OptimisticDataDisplay from './Optimistic-data-display'
 
 export default function OptimisticDataCard({
 	dataPromise,
