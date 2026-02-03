@@ -4,7 +4,7 @@ import OptimisticDataDisplay from './Optimistic-data-display'
 export default function OptimisticDataCard({
 	dataPromise,
 }: {
-	dataPromise: Promise<Data[]>
+	dataPromise:  Promise<Data[] | undefined>
 }) {
 	return (
 		<section className="space-y-4">

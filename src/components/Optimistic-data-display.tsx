@@ -11,13 +11,13 @@ type OptimisticAction =
 export default function OptimisticDataDisplay({
 	dataPromise,
 }: {
-	dataPromise: Promise<Data[]>
+	dataPromise:  Promise<Data[] | undefined>
 }) {
 	const initialData = use(dataPromise)
 	const [inputValue, setInputValue] = useState('')
 
 	const [optimisticData, updateOptimistic] = useOptimistic(
-		initialData,
+		initialData ?? [],
 		(state: Data[], action: OptimisticAction) => {
 			switch (action.type) {
 				case 'add':

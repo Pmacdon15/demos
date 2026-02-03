@@ -4,7 +4,7 @@ import SlowDataDisplay from './SlowDataDisplay'
 export default function SlowDataCard({
 	dataPromise,
 }: {
-	dataPromise: Promise<Data[]>
+	dataPromise: Promise<Data[] | undefined>
 }) {
 	return (
 		<section className="space-y-4">

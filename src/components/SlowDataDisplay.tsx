@@ -7,7 +7,7 @@ import type { Data } from '@/types/data-types'
 export default function SlowDataDisplay({
 	dataPromise,
 }: {
-	dataPromise: Promise<Data[]>
+	dataPromise:  Promise<Data[] | undefined>
 }) {
 	const data = use(dataPromise)
 	const [isPending, startTransition] = useTransition()
@@ -44,7 +44,7 @@ export default function SlowDataDisplay({
 				</p>
 
 				<div className="mb-6 space-y-3">
-					{data.map((item) => (
+					{data?.map((item) => (
 						<div
 							className="flex items-center justify-between rounded-xl border border-white/5 bg-white/5 p-4 transition-all hover:border-white/20"
 							key={item.id}
