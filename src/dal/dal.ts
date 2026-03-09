@@ -19,12 +19,14 @@ export async function fetchData(): Promise<Data[] | undefined> {
 }
 
 export async function fetchDataUncached(): Promise<Data[] | undefined> {
-	await new Promise((resolve) => setTimeout(resolve, 4000))
-	const sql = neon(String(process.env.DATABASE_URL))
+	
 	try {
+	    await new Promise((resolve) => setTimeout(resolve, 4000))
+	
+		const sql = neon(String(process.env.DATABASE_URL))
 		return (await sql`
-      SELECT * FROM data;
-    `) as Data[]
+		SELECT * FROM data;
+		`) as Data[]
 
 		// console.log('Table "data" created successfully');
 	} catch (error) {
