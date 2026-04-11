@@ -1,6 +1,7 @@
-import { ArrowRight, Database, Github, Mail, Zap } from 'lucide-react'
+import { ArrowRight, Database, Mail, Zap } from 'lucide-react'
 import Link from 'next/link'
 import Background from '@/components/background'
+import { GitHubIcon } from '@/components/icons.github'
 
 export default function Home() {
 	return (
@@ -93,7 +94,7 @@ export default function Home() {
 							rel="noopener noreferrer"
 							target="_blank"
 						>
-							<Github size={16} />
+							<GitHubIcon />
 							pmacon15
 						</Link>
 						<Link
