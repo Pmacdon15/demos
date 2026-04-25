@@ -1,34 +1,24 @@
 'use client'
 
-import { startTransition, use, useOptimistic, useState } from 'react'
-import { addData, deleteData } from '@/actions/data-actions'
-import type { Data } from '@/types/data-types'
+import { startTransition, useState } from 'react'
+import { deleteData } from '@/actions/data-actions'
+import { useAddDataMutation } from '@/mutations/data-mutations'
+import type { Data, OptimisticAction } from '@/types/data-types'
 
-type OptimisticAction =
-	| { type: 'add'; item: Data }
-	| { type: 'remove'; id: number }
+// type OptimisticAction =
+// 	| { type: 'add'; item: Data }
+// 	| { type: 'remove'; id: number }
 
 export default function OptimisticDataDisplay({
-	dataPromise,
+	data,
+	updateOptimistic,
 }: {
-	dataPromise:  Promise<Data[] | undefined>
+	data: Data[] | undefined
+	updateOptimistic: (action: OptimisticAction) => void
 }) {
-	const initialData = use(dataPromise)
 	const [inputValue, setInputValue] = useState('')
 
-	const [optimisticData, updateOptimistic] = useOptimistic(
-		initialData ?? [],
-		(state: Data[], action: OptimisticAction) => {
-			switch (action.type) {
-				case 'add':
-					return [...state, action.item]
-				case 'remove':
-					return state.filter((item) => item.id !== action.id)
-				default:
-					return state
-			}
-		},
-	)
+	const { mutate, isPending } = useAddDataMutation()
 
 	const handleAdd = async (e: React.FormEvent) => {
 		e.preventDefault()
@@ -47,7 +37,7 @@ export default function OptimisticDataDisplay({
 				},
 			})
 			// Real action
-			await addData(value)
+			await mutate(value)
 		})
 	}
 
@@ -75,7 +65,7 @@ export default function OptimisticDataDisplay({
 				</p>
 
 				<div className="mb-6 space-y-3">
-					{optimisticData.map((item) => (
+					{data?.map((item) => (
 						<div
 							className="flex items-center justify-between rounded-xl border border-white/5 bg-white/5 p-4 transition-all hover:border-white/20"
 							key={item.id}
@@ -121,23 +111,28 @@ export default function OptimisticDataDisplay({
 					/>
 					<button
 						className="flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 font-semibold text-white shadow-emerald-500/20 shadow-lg transition-all hover:bg-emerald-600"
+						disabled={isPending}
 						type="submit"
 					>
-						{/** biome-ignore lint/a11y/noSvgWithoutTitle: this is a demo */}
-						<svg
-							fill="none"
-							height="18"
-							stroke="currentColor"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth="2"
-							viewBox="0 0 24 24"
-							width="18"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<line x1="12" x2="12" y1="5" y2="19" />
-							<line x1="5" x2="19" y1="12" y2="12" />
-						</svg>
+						{isPending ? (
+							<div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+						) : (
+							// biome-ignore lint/a11y/noSvgWithoutTitle: This is a demo
+							<svg
+								fill="none"
+								height="18"
+								stroke="currentColor"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="2"
+								viewBox="0 0 24 24"
+								width="18"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<line x1="12" x2="12" y1="5" y2="19" />
+								<line x1="5" x2="19" y1="12" y2="12" />
+							</svg>
+						)}
 						Add
 					</button>
 				</form>

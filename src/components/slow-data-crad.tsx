@@ -1,10 +1,12 @@
-import type { Data } from '@/types/data-types'
+import type { Data, OptimisticAction } from '@/types/data-types'
 import SlowDataDisplay from './SlowDataDisplay'
 
 export default function SlowDataCard({
-	dataPromise,
+	data,
+	updateOptimistic,
 }: {
-	dataPromise: Promise<Data[] | undefined>
+	data: Data[] | undefined
+	updateOptimistic: (action: OptimisticAction) => void
 }) {
 	return (
 		<section className="space-y-4">
@@ -15,7 +17,7 @@ export default function SlowDataCard({
 				<div className="h-px flex-1 bg-white/5" />
 			</div>
 			{/* <Suspense fallback={<LoadingCard color="red" />}> */}
-			<SlowDataDisplay dataPromise={dataPromise} />
+			<SlowDataDisplay data={data} updateOptimistic={updateOptimistic} />
 			{/* </Suspense> */}
 		</section>
 	)

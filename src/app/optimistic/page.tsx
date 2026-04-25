@@ -1,10 +1,10 @@
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import Background from '@/components/background'
 import Footer from '@/components/footer'
 import PageHeader from '@/components/headers/page-header'
-import OptimisticDataCard from '@/components/optimistic-data-card'
-import SlowDataCard from '@/components/slow-data-crad'
+import DemoContainer from '@/components/optimistic/demo-container'
 import { fetchData } from '@/dal/dal'
 
 export default async function Home() {
@@ -28,10 +28,9 @@ export default async function Home() {
 
 				<PageHeader />
 
-				<div className="grid items-start gap-8 lg:grid-cols-2">
-					<SlowDataCard dataPromise={dataPromise} />
-					<OptimisticDataCard dataPromise={dataPromise} />
-				</div>
+				<Suspense>
+					<DemoContainer dataPromise={dataPromise} />
+				</Suspense>
 
 				<Footer />
 			</div>

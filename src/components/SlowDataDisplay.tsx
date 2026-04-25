@@ -1,30 +1,44 @@
 'use client'
 
-import { use, useState, useTransition } from 'react'
-import { addData, deleteData } from '@/actions/data-actions'
-import type { Data } from '@/types/data-types'
+import { startTransition, useState } from 'react'
+import { deleteData } from '@/actions/data-actions'
+import { useAddDataMutation } from '@/mutations/data-mutations'
+import type { Data, OptimisticAction } from '@/types/data-types'
 
 export default function SlowDataDisplay({
-	dataPromise,
+	data,
+	updateOptimistic,
 }: {
-	dataPromise:  Promise<Data[] | undefined>
+	data: Data[] | undefined
+	updateOptimistic: (action: OptimisticAction) => void
 }) {
-	const data = use(dataPromise)
-	const [isPending, startTransition] = useTransition()
 	const [inputValue, setInputValue] = useState('')
+	const { mutate, isPending } = useAddDataMutation()
 
 	const handleAdd = async (e: React.FormEvent) => {
 		e.preventDefault()
 		if (!inputValue.trim()) return
 
 		startTransition(async () => {
-			await addData(inputValue)
-			setInputValue('')
+			// Optimistic update
+			updateOptimistic({
+				type: 'add',
+				item: {
+					id: Math.random(), // temp id
+					data: inputValue,
+				},
+			})
+			// Real action
+			await mutate(inputValue)
 		})
+		setInputValue('')
 	}
 
 	const handleDelete = async (id: number) => {
 		startTransition(async () => {
+			// Optimistic update
+			updateOptimistic({ type: 'remove', id })
+			// Real action
 			await deleteData(id)
 		})
 	}
