@@ -15,7 +15,8 @@ export const useAddDataMutation = () =>
 			toast.success('Successfully added data')
 		},
 		onError: (error) => {
-			toast.error(error.message || 'Failed to add data')
+			toast.error('Failed to add data')
+			console.log('Error adding data', error)
 		},
 	})
 
@@ -27,7 +28,8 @@ export const useFailAddDataMutation = () =>
 			toast.success('Wait, this was supposed to fail!')
 		},
 		onError: (error) => {
-			toast.error(error.message || 'Expected failure occurred')
+			toast.error('Expected failure occurred')
+			console.log('Expected failure occurred', error)
 		},
 	})
 
@@ -39,7 +41,8 @@ export const useDeleteDataMutation = () =>
 			toast.success('Successfully deleted data')
 		},
 		onError: (error) => {
-			toast.error(error.message || 'Failed to delete data')
+			toast.error('Failed to delete data')
+			console.log('Failed to delete data', error)
 		},
 	})
 
@@ -51,6 +54,7 @@ export const useFailDeleteDataMutation = () =>
 			toast.success('Wait, this was supposed to fail!')
 		},
 		onError: (error) => {
-			toast.error(error.message || 'Expected deletion failure occurred')
+			toast.error('Expected failure occurred')
+			console.log('Expected failure occurred', error)
 		},
 	})
