@@ -1,12 +1,15 @@
+import type { UseMutateFunction } from '@tanstack/react-query'
 import type { Data, OptimisticAction } from '@/types/data-types'
 import OptimisticDataDisplay from './Optimistic-data-display'
 
 export default function OptimisticDataCard({
 	updateOptimistic,
 	data,
+	mutateDelete,
 }: {
 	updateOptimistic: (action: OptimisticAction) => void
 	data: Data[] | undefined
+	mutateDelete: UseMutateFunction<Data | null, Error, number, unknown>
 }) {
 	return (
 		<section className="space-y-4">
@@ -19,6 +22,7 @@ export default function OptimisticDataCard({
 			{/* <Suspense fallback={<LoadingCard color="emerald" />}> */}
 			<OptimisticDataDisplay
 				data={data}
+				mutateDelete={mutateDelete}
 				updateOptimistic={updateOptimistic}
 			/>
 			{/* </Suspense> */}

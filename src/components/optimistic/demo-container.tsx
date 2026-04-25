@@ -1,5 +1,6 @@
 'use client'
 import { use, useOptimistic } from 'react'
+import { useDeleteDataMutation } from '@/mutations/data-mutations'
 import type { Data, OptimisticAction } from '@/types/data-types'
 import OptimisticDataCard from '../optimistic-data-card'
 import SlowDataCard from '../slow-data-crad'
@@ -10,6 +11,7 @@ export default function DemoContainer({
 	dataPromise: Promise<Data[] | undefined>
 }) {
 	const initialData = use(dataPromise)
+	const { mutate: mutateDelete } = useDeleteDataMutation()
 
 	const [optimisticData, updateOptimistic] = useOptimistic(
 		initialData ?? [],
@@ -26,9 +28,14 @@ export default function DemoContainer({
 	)
 	return (
 		<div className="grid items-start gap-8 lg:grid-cols-2">
-			<SlowDataCard data={initialData} updateOptimistic={updateOptimistic}/>
+			<SlowDataCard
+				data={initialData}
+				mutateDelete={mutateDelete}
+				updateOptimistic={updateOptimistic}
+			/>
 			<OptimisticDataCard
 				data={optimisticData}
+				mutateDelete={mutateDelete}
 				updateOptimistic={updateOptimistic}
 			/>
 		</div>

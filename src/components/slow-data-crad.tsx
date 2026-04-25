@@ -1,12 +1,15 @@
+import type { UseMutateFunction } from '@tanstack/react-query'
 import type { Data, OptimisticAction } from '@/types/data-types'
 import SlowDataDisplay from './SlowDataDisplay'
 
 export default function SlowDataCard({
 	data,
 	updateOptimistic,
+	mutateDelete,
 }: {
 	data: Data[] | undefined
 	updateOptimistic: (action: OptimisticAction) => void
+	mutateDelete: UseMutateFunction<Data | null, Error, number, unknown>
 }) {
 	return (
 		<section className="space-y-4">
@@ -17,7 +20,11 @@ export default function SlowDataCard({
 				<div className="h-px flex-1 bg-white/5" />
 			</div>
 			{/* <Suspense fallback={<LoadingCard color="red" />}> */}
-			<SlowDataDisplay data={data} updateOptimistic={updateOptimistic} />
+			<SlowDataDisplay
+				data={data}
+				mutateDelete={mutateDelete}
+				updateOptimistic={updateOptimistic}
+			/>
 			{/* </Suspense> */}
 		</section>
 	)

@@ -1,7 +1,7 @@
 'use client'
 
+import type { UseMutateFunction } from '@tanstack/react-query'
 import { startTransition, useState } from 'react'
-import { deleteData } from '@/actions/data-actions'
 import { useAddDataMutation } from '@/mutations/data-mutations'
 import type { Data, OptimisticAction } from '@/types/data-types'
 
@@ -12,9 +12,11 @@ import type { Data, OptimisticAction } from '@/types/data-types'
 export default function OptimisticDataDisplay({
 	data,
 	updateOptimistic,
+	mutateDelete,
 }: {
 	data: Data[] | undefined
 	updateOptimistic: (action: OptimisticAction) => void
+	mutateDelete: UseMutateFunction<Data | null, Error, number, unknown>
 }) {
 	const [inputValue, setInputValue] = useState('')
 
@@ -46,7 +48,7 @@ export default function OptimisticDataDisplay({
 			// Optimistic update
 			updateOptimistic({ type: 'remove', id })
 			// Real action
-			await deleteData(id)
+			await mutateDelete(id)
 		})
 	}
 
