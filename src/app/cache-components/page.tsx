@@ -1,106 +1,151 @@
 import Link from 'next/link'
+import { ArrowLeft, Database, Zap, Sparkles } from 'lucide-react'
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
+import Background from '@/components/background'
+import Footer from '@/components/footer'
+import CacheHeader from '@/components/headers/cache-header'
 
 export default function Page() {
 	return (
-		<div className="flex min-h-screen flex-col items-center justify-center font-sans">
-			<div className="container rounded-sm border-2 p-8 shadow-2xl">
-				<h1 className="mb-4 font-bold text-4xl">
-					Cache Component Demo
-				</h1>
-				<p className="mb-8">
-					This project demonstrates the differences between various
-					component rendering strategies in Next.js 16^
-				</p>
-				<div className="flex flex-col justify-center gap-4 md:flex-row">
-					<Link
-						className="w-full text-center md:w-auto"
-						href={'/cache-components/long-blocker-no-fallback'}
-					>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<button
-									className={
-										'rounded-sm border bg-blue-400 p-2 px-4 text-white hover:bg-blue-500'
-									}
-									type="button"
-								>
-									Long Blocker (No Fallback)
-								</button>
-							</TooltipTrigger>
-							<TooltipContent>
-								<p>
-									Because cacheComponents requires dynamic
-									data be wrapped in suspense a fallback
-									identical to this page will be shown.
-								</p>
-							</TooltipContent>
-						</Tooltip>
-					</Link>
-					<Link
-						className="w-full text-center md:w-auto"
-						href={'/cache-components/long-blocker-fallback'}
-					>
-						<button
-							className={
-								'rounded-sm border bg-blue-400 p-2 px-4 text-white hover:bg-blue-500'
-							}
-							type="button"
-						>
-							Long Blocker (With Fallback)
-						</button>
-					</Link>
-					<Link
-						className="w-full text-center md:w-auto"
-						href={'/cache-components/long-blocker-ppr-load'}
-					>
-						<button
-							className={
-								'rounded-sm border bg-blue-400 p-2 px-4 text-white hover:bg-blue-500'
-							}
-							type="button"
-						>
-							PPR Load
-						</button>
-					</Link>
-				</div>
-				<p className="mt-2">
-					- The first method is the slowest, it feels like nothing is
-					happening when you click it.
-				</p>
-				<p className="mt-2">
-					- The second method is better but the whole page is blocked
-					while the data fetches.This compounds if you use several
-					awaits in sequence. Now you could improve the second method
-					by loading the data in the child components and using
-					suspense and better fallbacks but the navigation to the page
-					would feel slower then a route using PPR.
-				</p>{' '}
-				<p className="mt-2">
-					- The third is the best because you can load the static
-					shell of the page which feels instance, while allowing all
-					dynamic content to be fetch in parallel and data that is not
-					behind auth to can be cached across all deployments allowing
-					the data to be there on page load as a bonus you can start
-					all your data fetching promise on the page and pass them to
-					the children all while keeping the page static and the child
-					components accessing the data dynamic.
-				</p>
-				<Link className="flex w-full justify-center" href="/">
-					<button
-						className={
-							'rounded-sm border bg-blue-400 p-2 px-4 text-white hover:bg-blue-500'
-						}
-						type="button"
-					>
-						Back Home
-					</button>
+		<main className="min-h-screen bg-[#050505] text-zinc-200 selection:bg-blue-500/30">
+			<Background />
+
+			<div className="relative z-10 mx-auto max-w-6xl px-6 py-20">
+				<Link
+					className="group mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 font-medium text-sm text-zinc-400 transition-all hover:bg-white/10 hover:text-white"
+					href="/"
+				>
+					<ArrowLeft
+						className="transition-transform group-hover:-translate-x-1"
+						size={16}
+					/>
+					Back to Showcase
 				</Link>
+
+				<CacheHeader />
+
+				<div className="grid gap-6 md:grid-cols-3">
+					{/* Card 1 */}
+					<div className="group relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-md">
+						<div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+						<div className="relative z-10 flex flex-1 flex-col">
+							<div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
+								<Database size={20} />
+							</div>
+							<h2 className="mb-2 font-bold text-white text-xl">
+								Blocking (No Fallback)
+							</h2>
+							<p className="mb-6 flex-1 text-sm text-zinc-400 leading-relaxed">
+								The slowest method. The entire page navigation
+								is blocked while data fetches, resulting in a
+								"stuck" feel.
+							</p>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Link
+										className="inline-flex w-full items-center justify-center rounded-xl bg-blue-500 px-4 py-2.5 font-semibold text-white shadow-blue-500/20 shadow-lg transition-all hover:bg-blue-600"
+										href="/cache-components/long-blocker-no-fallback"
+									>
+										Launch Demo
+									</Link>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p className="max-w-xs">
+										Navigation will feel blocked for 4s
+										while the server works.
+									</p>
+								</TooltipContent>
+							</Tooltip>
+						</div>
+					</div>
+
+					{/* Card 2 */}
+					<div className="group relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-md">
+						<div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+						<div className="relative z-10 flex flex-1 flex-col">
+							<div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-purple-500/10 text-purple-400">
+								<Zap size={20} />
+							</div>
+							<h2 className="mb-2 font-bold text-white text-xl">
+								Standard Suspense
+							</h2>
+							<p className="mb-6 flex-1 text-sm text-zinc-400 leading-relaxed">
+								A step up. Navigates immediately but shows a
+								full-page loading state while sequence awaits
+								complete.
+							</p>
+							<Link
+								className="inline-flex w-full items-center justify-center rounded-xl bg-purple-500 px-4 py-2.5 font-semibold text-white shadow-purple-500/20 shadow-lg transition-all hover:bg-purple-600"
+								href="/cache-components/long-blocker-fallback"
+							>
+								Launch Demo
+							</Link>
+						</div>
+					</div>
+
+					{/* Card 3 */}
+					<div className="group relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-md">
+						<div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+						<div className="relative z-10 flex flex-1 flex-col">
+							<div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
+								<Sparkles size={20} />
+							</div>
+							<h2 className="mb-2 font-bold text-white text-xl">
+								PPR Stream
+							</h2>
+							<p className="mb-6 flex-1 text-sm text-zinc-400 leading-relaxed">
+								The gold standard. Static shell loads
+								instantly, dynamic parts stream in parallel as
+								they ready.
+							</p>
+							<Link
+								className="inline-flex w-full items-center justify-center rounded-xl bg-emerald-500 px-4 py-2.5 font-semibold text-white shadow-emerald-500/20 shadow-lg transition-all hover:bg-emerald-600"
+								href="/cache-components/long-blocker-ppr-load"
+							>
+								Launch Demo
+							</Link>
+						</div>
+					</div>
+				</div>
+
+				<div className="mt-16 grid gap-8 rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-md">
+					<h3 className="font-bold text-white text-2xl tracking-tight">
+						Strategic Comparison
+					</h3>
+					<div className="grid gap-6 md:grid-cols-3">
+						<div className="space-y-2">
+							<span className="font-bold text-blue-400 text-xs uppercase tracking-widest">
+								Method A
+							</span>
+							<p className="text-sm text-zinc-400">
+								Feels "broken" as the browser wait cursor appears. No UI feedback during fetch.
+							</p>
+						</div>
+						<div className="space-y-2">
+							<span className="font-bold text-purple-400 text-xs uppercase tracking-widest">
+								Method B
+							</span>
+							<p className="text-sm text-zinc-400">
+								Better feedback, but sequence awaits block the main thread, slowing down perceived speed.
+							</p>
+						</div>
+						<div className="space-y-2">
+							<span className="font-bold text-emerald-400 text-xs uppercase tracking-widest">
+								Method C
+							</span>
+							<p className="text-sm text-zinc-400">
+								Static shell is instant. Dynamic content fetches in parallel, keeping the UI alive.
+							</p>
+						</div>
+					</div>
+				</div>
+
+				<Footer />
 			</div>
-		</div>
+		</main>
 	)
 }
