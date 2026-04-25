@@ -1,13 +1,13 @@
+import { ArrowLeft, Database, Sparkles, Zap } from 'lucide-react'
 import Link from 'next/link'
-import { ArrowLeft, Database, Zap, Sparkles } from 'lucide-react'
+import Background from '@/components/background'
+import Footer from '@/components/footer'
+import CacheHeader from '@/components/headers/cache-header'
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
-import Background from '@/components/background'
-import Footer from '@/components/footer'
-import CacheHeader from '@/components/headers/cache-header'
 
 export default function Loading() {
 	return (
@@ -46,10 +46,8 @@ export default function Loading() {
 							</p>
 							<Tooltip>
 								<TooltipTrigger asChild>
-									<div
-										className="inline-flex w-full items-center justify-center rounded-xl bg-blue-500/50 px-4 py-2.5 font-semibold text-white/50 cursor-wait"
-									>
-										Launching...
+									<div className="inline-flex w-full items-center justify-center rounded-xl bg-blue-500 px-4 py-2.5 font-semibold text-white shadow-blue-500/20 shadow-lg transition-all hover:bg-blue-600">
+										Launch Demo
 									</div>
 								</TooltipTrigger>
 								<TooltipContent>
@@ -77,9 +75,7 @@ export default function Loading() {
 								full-page loading state while sequence awaits
 								complete.
 							</p>
-							<div
-								className="inline-flex w-full items-center justify-center rounded-xl bg-purple-500/50 px-4 py-2.5 font-semibold text-white/50 cursor-not-allowed"
-							>
+							<div className="inline-flex w-full items-center justify-center rounded-xl bg-purple-500/50 px-4 py-2.5 font-semibold text-white/50 cursor-not-allowed">
 								Launch Demo
 							</div>
 						</div>
@@ -96,13 +92,10 @@ export default function Loading() {
 								PPR Stream
 							</h2>
 							<p className="mb-6 flex-1 text-sm text-zinc-400 leading-relaxed">
-								The gold standard. Static shell loads
-								instantly, dynamic parts stream in parallel as
-								they ready.
+								The gold standard. Static shell loads instantly,
+								dynamic parts stream in parallel as they ready.
 							</p>
-							<div
-								className="inline-flex w-full items-center justify-center rounded-xl bg-emerald-500/50 px-4 py-2.5 font-semibold text-white/50 cursor-not-allowed"
-							>
+							<div className="inline-flex w-full items-center justify-center rounded-xl bg-emerald-500/50 px-4 py-2.5 font-semibold text-white/50 cursor-not-allowed">
 								Launch Demo
 							</div>
 						</div>
@@ -119,7 +112,8 @@ export default function Loading() {
 								Method A
 							</span>
 							<p className="text-sm text-zinc-400">
-								Feels "broken" as the browser wait cursor appears. No UI feedback during fetch.
+								Feels "broken" as the browser wait cursor
+								appears. No UI feedback during fetch.
 							</p>
 						</div>
 						<div className="space-y-2">
@@ -127,7 +121,8 @@ export default function Loading() {
 								Method B
 							</span>
 							<p className="text-sm text-zinc-400">
-								Better feedback, but sequence awaits block the main thread, slowing down perceived speed.
+								Better feedback, but sequence awaits block the
+								main thread, slowing down perceived speed.
 							</p>
 						</div>
 						<div className="space-y-2">
@@ -135,7 +130,8 @@ export default function Loading() {
 								Method C
 							</span>
 							<p className="text-sm text-zinc-400">
-								Static shell is instant. Dynamic content fetches in parallel, keeping the UI alive.
+								Static shell is instant. Dynamic content fetches
+								in parallel, keeping the UI alive.
 							</p>
 						</div>
 					</div>
