@@ -2,7 +2,11 @@
 
 import { useMutationState, type UseMutateFunction } from '@tanstack/react-query'
 import { startTransition, useState } from 'react'
-import { useAddDataMutation } from '@/mutations/data-mutations'
+import {
+	useAddDataMutation,
+	useFailAddDataMutation,
+	useFailDeleteDataMutation,
+} from '@/mutations/data-mutations'
 import type { Data, OptimisticAction } from '@/types/data-types'
 
 export default function SlowDataDisplay({
@@ -15,7 +19,9 @@ export default function SlowDataDisplay({
 	mutateDelete: UseMutateFunction<Data | null, Error, number, unknown>
 }) {
 	const [inputValue, setInputValue] = useState('')
-	const { mutate: mutateAdd, isPending: isPendingAdd } = useAddDataMutation()
+	const { mutate: mutateAdd } = useAddDataMutation()
+	const { mutate: mutateFailAdd } = useFailAddDataMutation()
+	const { mutate: mutateFailDelete } = useFailDeleteDataMutation()
 
 	const pendingDeletions = useMutationState({
 		filters: { mutationKey: ['deleteData'], status: 'pending' },
@@ -28,9 +34,10 @@ export default function SlowDataDisplay({
 
 	const isAdding = pendingAdditions.length > 0
 
-	const handleAdd = async (e: React.FormEvent) => {
+	const handleAdd = async (e: React.FormEvent, isFail = false) => {
 		e.preventDefault()
-		if (!inputValue.trim() || isAdding) return
+		const value = inputValue.trim()
+		if (!value || isAdding) return
 
 		startTransition(async () => {
 			// Optimistic update
@@ -38,21 +45,29 @@ export default function SlowDataDisplay({
 				type: 'add',
 				item: {
 					id: Math.random(), // temp id
-					data: inputValue,
+					data: value,
 				},
 			})
 			// Real action
-			await mutateAdd(inputValue)
+			if (isFail) {
+				await mutateFailAdd(value)
+			} else {
+				await mutateAdd(value)
+			}
 		})
 		setInputValue('')
 	}
 
-	const handleDelete = async (id: number) => {
+	const handleDelete = async (id: number, isFail = false) => {
 		startTransition(async () => {
 			// Optimistic update
 			updateOptimistic({ type: 'remove', id })
 			// Real action
-			await mutateDelete(id)
+			if (isFail) {
+				await mutateFailDelete(id)
+			} else {
+				await mutateDelete(id)
+			}
 		})
 	}
 
@@ -81,16 +96,16 @@ export default function SlowDataDisplay({
 								<span className="font-medium text-zinc-200">
 									{item.data}
 								</span>
-								<button
-									className="p-2 text-zinc-500 transition-colors hover:text-red-400 disabled:opacity-50"
-									disabled={isDeleting}
-									onClick={() => handleDelete(item.id)}
-									type="button"
-								>
-									{isDeleting ? (
-										<div className="h-4 w-4 animate-spin rounded-full border-2 border-red-500/30 border-t-red-500" />
-									) : (
-										// biome-ignore lint/a11y/noSvgWithoutTitle: this is for a demo
+								<div className="flex gap-2">
+									<button
+										className="group/btn relative rounded-lg p-2 text-zinc-500 transition-colors hover:text-red-400 disabled:opacity-50"
+										disabled={isDeleting}
+										onClick={() =>
+											handleDelete(item.id, true)
+										}
+										title="Simulate Delete Failure"
+										type="button"
+									>
 										<svg
 											fill="none"
 											height="18"
@@ -102,37 +117,92 @@ export default function SlowDataDisplay({
 											width="18"
 											xmlns="http://www.w3.org/2000/svg"
 										>
-											<path d="M3 6h18" />
-											<path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-											<path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-											<line x1="10" x2="10" y1="11" y2="17" />
-											<line x1="14" x2="14" y1="11" y2="17" />
+											<path d="m15 9-6 6" />
+											<path d="m9 9 6 6" />
+											<circle cx="12" cy="12" r="10" />
 										</svg>
-									)}
-								</button>
+									</button>
+									<button
+										className="p-2 text-zinc-500 transition-colors hover:text-red-400 disabled:opacity-50"
+										disabled={isDeleting}
+										onClick={() => handleDelete(item.id)}
+										type="button"
+									>
+										{isDeleting ? (
+											<div className="h-4 w-4 animate-spin rounded-full border-2 border-red-500/30 border-t-red-500" />
+										) : (
+											// biome-ignore lint/a11y/noSvgWithoutTitle: this is for a demo
+											<svg
+												fill="none"
+												height="18"
+												stroke="currentColor"
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth="2"
+												viewBox="0 0 24 24"
+												width="18"
+												xmlns="http://www.w3.org/2000/svg"
+											>
+												<path d="M3 6h18" />
+												<path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+												<path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+												<line x1="10" x2="10" y1="11" y2="17" />
+												<line x1="14" x2="14" y1="11" y2="17" />
+											</svg>
+										)}
+									</button>
+								</div>
 							</div>
 						)
 					})}
 				</div>
 
-				<form className="flex gap-2" onSubmit={handleAdd}>
-					<input
-						className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-white transition-all placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-red-500/50 disabled:opacity-50"
-						disabled={isAdding}
-						onChange={(e) => setInputValue(e.target.value)}
-						placeholder="Add something..."
-						type="text"
-						value={inputValue}
-					/>
-					<button
-						className="flex items-center gap-2 rounded-xl bg-red-500 px-4 py-2.5 font-semibold text-white shadow-lg shadow-red-500/20 transition-all hover:bg-red-600 disabled:bg-red-500/50"
-						disabled={isAdding}
-						type="submit"
-					>
-						{isAdding ? (
-							<div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-						) : (
-							// biome-ignore lint/a11y/noSvgWithoutTitle: This is a demo
+				<form
+					className="flex flex-col gap-3"
+					onSubmit={(e) => handleAdd(e)}
+				>
+					<div className="flex gap-2">
+						<input
+							className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-white transition-all placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-red-500/50 disabled:opacity-50"
+							disabled={isAdding}
+							onChange={(e) => setInputValue(e.target.value)}
+							placeholder="Add something..."
+							type="text"
+							value={inputValue}
+						/>
+					</div>
+					<div className="flex gap-2">
+						<button
+							className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-red-500 px-4 py-2.5 font-semibold text-white shadow-lg shadow-red-500/20 transition-all hover:bg-red-600 disabled:opacity-50"
+							disabled={isAdding}
+							type="submit"
+						>
+							{isAdding ? (
+								<div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+							) : (
+								<svg
+									fill="none"
+									height="18"
+									stroke="currentColor"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									viewBox="0 0 24 24"
+									width="18"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<line x1="12" x2="12" y1="5" y2="19" />
+									<line x1="5" x2="19" y1="12" y2="12" />
+								</svg>
+							)}
+							Add Success
+						</button>
+						<button
+							className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-orange-500/50 bg-orange-500/10 px-4 py-2.5 font-semibold text-orange-400 transition-all hover:bg-orange-500/20 disabled:opacity-50"
+							disabled={isAdding}
+							onClick={(e) => handleAdd(e, true)}
+							type="button"
+						>
 							<svg
 								fill="none"
 								height="18"
@@ -144,12 +214,13 @@ export default function SlowDataDisplay({
 								width="18"
 								xmlns="http://www.w3.org/2000/svg"
 							>
-								<line x1="12" x2="12" y1="5" y2="19" />
-								<line x1="5" x2="19" y1="12" y2="12" />
+								<path d="m15 9-6 6" />
+								<path d="m9 9 6 6" />
+								<circle cx="12" cy="12" r="10" />
 							</svg>
-						)}
-						Add
-					</button>
+							Add Fail
+						</button>
+					</div>
 				</form>
 			</div>
 

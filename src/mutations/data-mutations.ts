@@ -1,18 +1,33 @@
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { addData, deleteData } from '@/actions/data-actions'
+import {
+	addData,
+	deleteData,
+	failAddData,
+	failDeleteData,
+} from '@/actions/data-actions'
 
 export const useAddDataMutation = () =>
 	useMutation({
 		mutationKey: ['addData'],
 		mutationFn: addData,
-		onSuccess: (data) => {
-			console.log('Data added successfully', data)
-			toast.success('Data added successfully')
+		onSuccess: () => {
+			toast.success('Successfully added data')
 		},
 		onError: (error) => {
-			console.log('Error adding data', error)
-			toast.success('Error added successfully')
+			toast.error(error.message || 'Failed to add data')
+		},
+	})
+
+export const useFailAddDataMutation = () =>
+	useMutation({
+		mutationKey: ['addData'],
+		mutationFn: failAddData,
+		onSuccess: () => {
+			toast.success('Wait, this was supposed to fail!')
+		},
+		onError: (error) => {
+			toast.error(error.message || 'Expected failure occurred')
 		},
 	})
 
@@ -20,12 +35,22 @@ export const useDeleteDataMutation = () =>
 	useMutation({
 		mutationKey: ['deleteData'],
 		mutationFn: deleteData,
-		onSuccess: (data) => {
-			console.log('Data deleted successfully', data)
-			toast.success('Data delete successfully')
+		onSuccess: () => {
+			toast.success('Successfully deleted data')
 		},
 		onError: (error) => {
-			console.log('Error deleting data', error)
-			toast.success('Error delete successfully')
+			toast.error(error.message || 'Failed to delete data')
+		},
+	})
+
+export const useFailDeleteDataMutation = () =>
+	useMutation({
+		mutationKey: ['deleteData'],
+		mutationFn: failDeleteData,
+		onSuccess: () => {
+			toast.success('Wait, this was supposed to fail!')
+		},
+		onError: (error) => {
+			toast.error(error.message || 'Expected deletion failure occurred')
 		},
 	})

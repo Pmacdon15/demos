@@ -22,6 +22,11 @@ export async function addData(value: string): Promise<Data> {
 	}
 }
 
+export async function failAddData(value: string): Promise<Data> {
+	await new Promise((resolve) => setTimeout(resolve, 2000))
+	throw new Error('Server-side error: Failed to add data')
+}
+
 // Delete data by ID
 export async function deleteData(id: number): Promise<Data | null> {
 	await new Promise((resolve) => setTimeout(resolve, 2000))
@@ -42,4 +47,9 @@ export async function deleteData(id: number): Promise<Data | null> {
 		console.error('Failed to delete data:', error)
 		throw error
 	}
+}
+
+export async function failDeleteData(id: number): Promise<Data | null> {
+	await new Promise((resolve) => setTimeout(resolve, 2000))
+	throw new Error('Server-side error: Failed to delete data')
 }
