@@ -2,7 +2,10 @@
 
 import { startTransition, useState } from 'react'
 import { deleteData } from '@/actions/data-actions'
-import { useAddDataMutation } from '@/mutations/data-mutations'
+import {
+	useAddDataMutation,
+	useDeleteDataMutation,
+} from '@/mutations/data-mutations'
 import type { Data, OptimisticAction } from '@/types/data-types'
 
 export default function SlowDataDisplay({
@@ -13,7 +16,9 @@ export default function SlowDataDisplay({
 	updateOptimistic: (action: OptimisticAction) => void
 }) {
 	const [inputValue, setInputValue] = useState('')
-	const { mutate, isPending } = useAddDataMutation()
+	const { mutate: mutateAdd, isPending: isPendingAdd } = useAddDataMutation()
+	const { mutate: mutateDelete, isPending: isPendingDelete } =
+		useDeleteDataMutation()
 
 	const handleAdd = async (e: React.FormEvent) => {
 		e.preventDefault()
@@ -29,7 +34,7 @@ export default function SlowDataDisplay({
 				},
 			})
 			// Real action
-			await mutate(inputValue)
+			await mutateAdd(inputValue)
 		})
 		setInputValue('')
 	}
@@ -39,7 +44,7 @@ export default function SlowDataDisplay({
 			// Optimistic update
 			updateOptimistic({ type: 'remove', id })
 			// Real action
-			await deleteData(id)
+			await mutateDelete(id)
 		})
 	}
 
@@ -68,28 +73,32 @@ export default function SlowDataDisplay({
 							</span>
 							<button
 								className="p-2 text-zinc-500 transition-colors hover:text-red-400 disabled:opacity-50"
-								disabled={isPending}
+								disabled={isPendingDelete}
 								onClick={() => handleDelete(item.id)}
 								type="button"
 							>
-								{/** biome-ignore lint/a11y/noSvgWithoutTitle: this is for a demo */}
-								<svg
-									fill="none"
-									height="18"
-									stroke="currentColor"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth="2"
-									viewBox="0 0 24 24"
-									width="18"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path d="M3 6h18" />
-									<path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-									<path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-									<line x1="10" x2="10" y1="11" y2="17" />
-									<line x1="14" x2="14" y1="11" y2="17" />
-								</svg>
+								{isPendingDelete ? (
+									<div className="h-4 w-4 animate-spin rounded-full border-2 border-red-500/30 border-t-red-500" />
+								) : (
+									// biome-ignore lint/a11y/noSvgWithoutTitle: this is for a demo
+									<svg
+										fill="none"
+										height="18"
+										stroke="currentColor"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										viewBox="0 0 24 24"
+										width="18"
+										xmlns="http://www.w3.org/2000/svg"
+									>
+										<path d="M3 6h18" />
+										<path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+										<path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+										<line x1="10" x2="10" y1="11" y2="17" />
+										<line x1="14" x2="14" y1="11" y2="17" />
+									</svg>
+								)}
 							</button>
 						</div>
 					))}
@@ -98,7 +107,7 @@ export default function SlowDataDisplay({
 				<form className="flex gap-2" onSubmit={handleAdd}>
 					<input
 						className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-white transition-all placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-red-500/50 disabled:opacity-50"
-						disabled={isPending}
+						disabled={isPendingAdd}
 						onChange={(e) => setInputValue(e.target.value)}
 						placeholder="Add something..."
 						type="text"
@@ -106,10 +115,10 @@ export default function SlowDataDisplay({
 					/>
 					<button
 						className="flex items-center gap-2 rounded-xl bg-red-500 px-4 py-2.5 font-semibold text-white shadow-lg shadow-red-500/20 transition-all hover:bg-red-600 disabled:bg-red-500/50"
-						disabled={isPending}
+						disabled={isPendingAdd}
 						type="submit"
 					>
-						{isPending ? (
+						{isPendingAdd ? (
 							<div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
 						) : (
 							// biome-ignore lint/a11y/noSvgWithoutTitle: This is a demo
@@ -133,13 +142,14 @@ export default function SlowDataDisplay({
 				</form>
 			</div>
 
-			{isPending && (
-				<div className="absolute right-6 bottom-2">
-					<span className="animate-pulse font-bold text-[10px] text-red-400 uppercase tracking-widest">
-						Processing...
-					</span>
-				</div>
-			)}
+			{isPendingAdd ||
+				(isPendingDelete && (
+					<div className="absolute right-6 bottom-2">
+						<span className="animate-pulse font-bold text-[10px] text-red-400 uppercase tracking-widest">
+							Processing...
+						</span>
+					</div>
+				))}
 		</div>
 	)
 }
